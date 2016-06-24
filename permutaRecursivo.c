@@ -1,6 +1,4 @@
-#include <cstdio>
 #include <iostream>
-
 using namespace std;
 
 int vet[3] = {1, 2, 3};
