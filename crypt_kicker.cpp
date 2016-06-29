@@ -8,76 +8,84 @@
 
 using namespace std;
 
-bool Find(vector<set<string>> &dict,vector<string> &line, map<char,char> &dec,int spot){
-  //Check that the end of the line hasn't been reached
-  if(spot<line.size()){
-    //Get the size of the current word
-    int sSize=line[spot].size();
-    string cand;
-    cand.resize(sSize,'A');
-    //Attempt to decode the current word
-    for(int i=0;i<sSize;i++){
-      if(dec.find(line[spot][i])!=dec.end())
-         cand[i]=dec[line[spot][i]];
-    }   
-    //Check all strings in the dictionary of the current length                
-    for(set<string>::iterator it=dict[sSize].begin();it!=dict[sSize].end();it++){
-      bool notMatch=false;
-      for(int i=0;i<sSize;i++)
-       //A is used to signify an undecoded character, this if says if the character was
-       // decoded and it does not equal to corresponding character in the word, it's not a match
-       if(cand[i]!='A'&&cand[i]!=(*it)[i])
-        notMatch=true;
-     if(notMatch)
-       continue;
-      for(int i=0;i<sSize;i++)
-      //if it is a feasible match, then add the learned characters to the decoder
-    if(cand[i]=='A')
-      dec.insert(pair<char,char> (line[spot][i],(*it)[i]));
-      //Keep decoding
-      if(Find(dict,line,dec,spot+1))
+bool Find(vector<set<string>> &dict,vector<string> &line, map<char,char> &dec,int localized)
+{
+    //Verifica se não chegou no fim da linha
+    if(localized<line.size())
+    {
+        //Pega o tamanho da palavra atual
+        int strLen=line[localized].size();
+        string test;
+        test.resize(strLen,'A');
+        //Tenta decodificar a palavra atual
+        for(int i=0; i<strLen; i++)
+        {
+            if(dec.find(line[localized][i])!=dec.end())
+                test[i]=dec[line[localized][i]];
+        }
+        //Verifica em todas as palavras do dicionário se alguma tem o tamanho da palavra atual
+        for(set<string>::iterator it=dict[strLen].begin(); it!=dict[strLen].end(); it++)
+        {
+            bool notMatch=false;
+            for(int i=0; i<strLen; i++)/*Usa o 'A' para verificar se é um caractere não decodificado, se for um caractere
+                              não decodificado e ele não corresponder a um caracter na palavra, então não deu match!*/
+                if(test[i]!='A'&&test[i]!=(*it)[i])
+                    notMatch=true;
+            if(notMatch)
+                continue;
+            for(int i=0; i<strLen; i++)
+                //se é um match possivel, então coloca o cara identificado pra fazer a decodificação
+                if(test[i]=='A')
+                    dec.insert(pair<char,char> (line[localized][i],(*it)[i]));
+            //Continua decodificando
+            if(Find(dict,line,dec,localized+1))
+                return true;
+            //Se deu falha então remove os caracteres que foram adicionados
+            for(int i=0; i<strLen; i++)
+                if(test[i]=='A')
+                    dec.erase(line[localized][i]);
+        }
+        if(localized==0)
+        {
+            //Se chegamos aqui então, nada foi encontrado... preenche o mapa<decod> com asteriscos
+            string b="qwertyuiopasdfghjklzxcvbnm";
+            for(int i=0; i<b.size(); i++)
+                dec.insert(pair<char,char> (b[i],'*'));
+        }
+        return false;
+    }
     return true;
-      //If decoding failed, then remove added characters
-      for(int i=0;i<sSize;i++)
-    if(cand[i]=='A')
-      dec.erase(line[spot][i]);
-    }
-    if(spot==0){
-      //This means no solution was found, fill decoder with a map to astericks
-      string b="qwertyuiopasdfghjklzxcvbnm";
-      for(int i=0;i<b.size();i++)
-    dec.insert(pair<char,char> (b[i],'*'));
-    }
-    return false;
-  }
-  return true;
 }
-int main(){
-  int size;
-  cin >> size;
-  vector<set<string>> dict;
-  dict.resize(17);
-  string grab;
-  for(int i=0;i<size;i++){
-    //Bucket dictionary
-    cin >> grab;
-    dict[grab.size()].insert(grab);
-  }
-  while(getline(cin,grab)){
-    stringstream in(stringstream::in |stringstream::out);
-    in << grab;
-    vector<string> line;
-    while(in >> grab)
-      line.push_back(grab);
-    map<char,char> dec;
-    Find(dict,line,dec,0);
-    for(int i=0;i<line.size();i++){
-      for(int j=0;j<line[i].size();j++)
-    cout << dec[line[i][j]];
-      if(i!=line.size()-1)
-    cout << " ";
-      else
-    cout << endl;
+int main()
+{
+    int size;
+    cin >> size;
+    vector<set<string>> dict;
+    dict.resize(17);
+    string choose;
+    for(int i=0; i<size; i++)
+    {
+        //preenchendo o dicionário
+        cin >> choose;
+        dict[choose.size()].insert(choose);
     }
-  }
+    while(getline(cin,choose))
+    {
+        stringstream in(stringstream::in |stringstream::out);
+        in << choose;
+        vector<string> line;
+        while(in >> choose)
+            line.push_back(choose);
+        map<char,char> dec;
+        Find(dict,line,dec,0);
+        for(int i=0; i<line.size(); i++)
+        {
+            for(int j=0; j<line[i].size(); j++)
+                cout << dec[line[i][j]];
+            if(i!=line.size()-1)
+                cout << " ";
+            else
+                cout << endl;
+        }
+    }
 }
