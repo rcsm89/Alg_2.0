@@ -13,18 +13,18 @@ using namespace std;
 int memo[52][52];
 vector<int> v;
 
-int pd(int a, int b)
+int pd(int l, int r)
 {
-    if(b-a==1) return 0;
-    
-    if(memo[a][b]!=-1) return memo[a][b];
-
+    int aux=0;
     int x=1000000;
+    if(r-l==1) return 0;
+    if(memo[l][r]!=-1) return memo[l][r];
 
-    for(int i=a+1;i<b;i++)
-        x=min(v[b]-v[a]+pd(a,i)+pd(i,b),x);
-
-    return memo[a][b]=x;
+    for(int i=l+1;i<r;i++){
+        aux = v[r]-v[l]+pd(l,i)+pd(i,r);
+        aux<=x?x=aux:x;
+    }
+    return memo[l][r]=x;
 }
 
 int main()
@@ -48,9 +48,9 @@ int main()
         v.push_back(L);
 
         for(int i = 0;i < 52;i++){
-        	for(int j = 0; j < 52; j++){
-        		memo[i][j] = -1;
-        	}
+            for(int j = 0; j < 52; j++){
+                memo[i][j] = -1;
+            }
         }
 
         printf("The minimum cutting is %d.\n",pd(0,n+1));
