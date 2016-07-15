@@ -4,12 +4,8 @@
  *  Created on: 14 Jul 2016
  *      Author: ricardo
  */
-
 #include <vector>
-//#include <string>
-//#include <algorithm>
 #include <iostream>
-//#include <queue>
 #include <stdio.h>
 
 using namespace std;
@@ -20,28 +16,22 @@ vector<int> v;
 int pd(int a, int b)
 {
     if(b-a==1) return 0;
+    
+    if(memo[a][b]!=-1) return memo[a][b];
 
-//    if(memo[a][b]!=-1) return memo[a][b];
-
-    int x=4000000;
+    int x=1000000;
 
     for(int i=a+1;i<b;i++)
         x=min(v[b]-v[a]+pd(a,i)+pd(i,b),x);
 
-    memo[a][b]=x;
-    return x;
-
+    return memo[a][b]=x;
 }
 
 int main()
 {
+    int L, n, aux;
 
-
-    int L;
-    int n;
-    int aux;
-
-    while(true)
+    while(1)
     {
         scanf("%d", &L);
         if(L==0) break;
@@ -63,13 +53,7 @@ int main()
         	}
         }
 
-
         printf("The minimum cutting is %d.\n",pd(0,n+1));
-
     }
-
-
     return 0;
 }
-
-
