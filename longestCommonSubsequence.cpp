@@ -1,10 +1,10 @@
 #include <iostream>
 #include <algorithm>
+#include <string>
 
 using namespace std;
 
 int get_len_lcs(string & s1, string & s2){
-
 	int len_s1 = s1.size();
 	int len_s2 = s2.size();
 
@@ -26,11 +26,17 @@ int get_len_lcs(string & s1, string & s2){
 	return mat[len_s1][len_s2];
 }
 
-
 int main() {
-	string s1("bcacbcabbaccbab");
-	string s2("bccabccbbabacbc");
+	int n;
+	string s1;
+	string s2;
+	
+	string str;
 
-	cout << "Lenght: " << get_len_lcs(s1, s2) <<  endl;
+	while(getline(cin, s1)){
+		if(s1 == "") break;
+		getline(cin, s2);
+		cout << get_len_lcs(s1, s2) <<  endl;
+	}
 	return 0;
 }
