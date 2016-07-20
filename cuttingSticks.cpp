@@ -1,59 +1,58 @@
 /*
  * cuttingSticks.cpp
  *
- *  Created on: 14 Jul 2016
+ *  Created on: 19 Jul 2016
  *      Author: ricardo
  */
-#include <vector>
-#include <iostream>
+
 #include <stdio.h>
+#include <iostream>
+#include <algorithm>
+#include <vector>
 
 using namespace std;
 
-int memo[52][52];
-vector<int> v;
+int lcs_mat[102][102];
 
-int pd(int l, int r)
-{
-    int aux=0;
-    int x=1000000;
-    if(r-l==1) return 0;
-    if(memo[l][r]!=-1) return memo[l][r];
+int main() {
+	vector<int> T1, T2;
+	int one, two, maxTower, aux, cont = 1;
 
-    for(int i=l+1;i<r;i++){
-        aux = v[r]-v[l]+pd(l,i)+pd(i,r);
-        aux<=x?x=aux:x;
-    }
-    return memo[l][r]=x;
-}
+	do {
+		cin >> one >> two;
+		if (!one && !two)
+			break;
 
-int main()
-{
-    int L, n, aux;
+		T1.clear();
+		for (int i = 0; i < one; i++) {
+			cin >> aux;
+			T1.push_back(aux);
+		}
 
-    while(1)
-    {
-        scanf("%d", &L);
-        if(L==0) break;
+		T2.clear();
+		for (int i = 0; i < two; i++) {
+			cin >> aux;
+			T2.push_back(aux);
+		}
 
-        scanf("%d", &n);
+		maxTower = max(two, one);
 
-        v.clear();
-        v.push_back(0);
-        for(int i=0;i<n;i++)
-        {
-            cin>>aux;
-            v.push_back(aux);
-        }
-        v.push_back(L);
+		for (int i = 0; i < maxTower; i++)
+			lcs_mat[0][i] = lcs_mat[i][0] = 0;
 
-        for(int i = 0;i < 52;i++){
-            for(int j = 0; j < 52; j++){
-                memo[i][j] = -1;
-            }
-        }
-
-        printf("The minimum cutting is %d.\n",pd(0,n+1));
-    }
-    return 0;
+		int i, j;
+		for (i = 1; i <= one; i++) { //lcs_algorithm
+			for (j = 1; j <= two; j++) {
+				if (T1[i - 1] == T2[j - 1])
+					lcs_mat[i][j] = lcs_mat[i - 1][j - 1] + 1;
+				else if (lcs_mat[i - 1][j] >= lcs_mat[i][j - 1])
+					lcs_mat[i][j] = lcs_mat[i - 1][j];
+				else
+					lcs_mat[i][j] = lcs_mat[i][j - 1];
+			}
+		}
+		cout << "Twin Towers #" << cont++ << "\nNumber of Tiles : "
+				<< lcs_mat[i - 1][j - 1] << endl;
+	} while (one && two);
+	return 0;
 }
