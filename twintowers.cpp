@@ -1,31 +1,51 @@
 #include <stdio.h>
-int C[102][102];
+#include <iostream>
+#include <algorithm>
+#include <vector>
+
+using namespace std;
+
+int lcs_mat[102][102];
+
 int main() {
-    int A[102], B[102], I, J, ONE, TWO, MAX, CASES=1;
-    while (scanf("%d %d",&ONE, &TWO)==2 && ONE && TWO) {
-        for (I=0 ; I<ONE ; I++) 
-            scanf("%d",&A[I]);
-            
-        for (I=0 ; I<TWO ; I++) 
-            scanf("%d",&B[I]);
-        
-        if (TWO>=ONE) MAX = TWO;
-        // else MAX = ONE;
-        for (I=0 ; I<MAX ; I++) 
-            C[0][I] = C[I][0] = 0;
-        
-        for (I=1 ; I<=ONE ; I++) {//tenta encontrar a maior sequencia entre as duas torres... sqn
-            for (J=1 ; J<=TWO ; J++) {
-                if (A[I-1] == B[J-1])
-                    C[I][J] = C[I-1][J-1] + 1;
-                else if (C[I-1][J]>=C[I][J-1])
-                    C[I][J] = C[I-1][J];
-                else 
-                    C[I][J] = C[I][J-1];
-            }
-        }
-        printf("Twin Towers #%d\nNumber of Tiles : ",CASES++);
-        printf("%d\n\n",C[I-1][J-1]);
-    }
-    return 0;
+	vector<int> T1, T2;
+	int one, two, maxTower, aux, cont = 1;
+
+	do {
+		cin >> one >> two;
+		if (!one && !two)
+			break;
+
+		T1.clear();
+		for (int i = 0; i < one; i++) {
+			cin >> aux;
+			T1.push_back(aux);
+		}
+
+		T2.clear();
+		for (int i = 0; i < two; i++) {
+			cin >> aux;
+			T2.push_back(aux);
+		}
+
+		maxTower = max(two, one);
+
+		for (int i = 0; i < maxTower; i++)
+			lcs_mat[0][i] = lcs_mat[i][0] = 0;
+
+		int i, j;
+		for (i = 1; i <= one; i++) { //lcs_algorithm
+			for (j = 1; j <= two; j++) {
+				if (T1[i - 1] == T2[j - 1])
+					lcs_mat[i][j] = lcs_mat[i - 1][j - 1] + 1;
+				else if (lcs_mat[i - 1][j] >= lcs_mat[i][j - 1])
+					lcs_mat[i][j] = lcs_mat[i - 1][j];
+				else
+					lcs_mat[i][j] = lcs_mat[i][j - 1];
+			}
+		}
+		cout << "Twin Towers #" << cont++ << "\nNumber of Tiles : "
+				<< lcs_mat[i - 1][j - 1] << endl;
+	} while (one && two);
+	return 0;
 }
