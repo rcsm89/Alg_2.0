@@ -49,7 +49,6 @@ void solve()
         cout << "Case #" << Case++ << endl;
     else
         cout << "\nCase #" << Case++ << endl;
-    //Case++;
 
     for (int i = 0; i < Q; i++)
     {
